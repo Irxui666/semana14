@@ -1,0 +1,28 @@
+package com.example.Actividad01.controller;
+
+import com.example.Actividad01.auditoria.*;
+import com.example.Actividad01.dto.PaginaResponseDTO;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/auditoria")
+public class AuditoriaController {
+    private final AuditoriaService service;
+
+    public AuditoriaController(AuditoriaService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public PaginaResponseDTO<AuditoriaEvento> buscar(
+            @RequestParam(required = false) String usuario,
+            @RequestParam(required = false) String accion,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "20") int tamanio) {
+        return service.buscar(usuario, accion, desde, hasta, pagina, tamanio);
+    }
+}

@@ -1,0 +1,69 @@
+<div class="page-header">
+  <h2>Productos</h2>
+  <div class="actions">
+    <button class="btn" (click)="cargar()" [disabled]="cargando()">Actualizar stock</button
+    ><a class="btn btn-primary" *appSiPermiso="'CATALOGO_ESCRIBIR'" routerLink="nuevo">Nuevo producto</a>
+  </div>
+</div>
+@if (error()) {
+  <div class="alerta" role="alert">{{ error() }}</div>
+}
+@if (exito()) {
+  <div class="exito" role="status">{{ exito() }}</div>
+}
+<label class="search"
+  >Buscar por nombre o categoría<input
+    class="input"
+    [value]="filtro()"
+    (input)="buscar($any($event.target).value)"
+/></label>
+@if (cargando()) {
+  <p role="status">Cargando productos…</p>
+}
+@if (resultado(); as r) {
+  <div class="table-wrap">
+    <table class="tabla" data-testid="tabla-productos">
+      <thead>
+        <tr>
+          <th><button type="button" class="btn" (click)="ordenarPor('nombre')">Producto</button></th>
+          <th>Categoría</th>
+          <th><button type="button" class="btn" (click)="ordenarPor('precio')">Precio</button></th>
+          <th><button type="button" class="btn" (click)="ordenarPor('stock')">Stock</button></th>
+          <th>Estado</th>
+          <th *appSiPermiso="'CATALOGO_ESCRIBIR'">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of r.contenido; track p.id) {
+          <tr>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.categoriaNombre }}</td>
+            <td class="monto">{{ p.precio | currency: 'PEN' : 'S/ ' }}</td>
+            <td data-testid="stock-producto">{{ p.stock }}</td>
+            <td>
+              <span class="badge" [class.inactivo]="!p.estado">{{
+                p.estado ? 'Activo' : 'Inactivo'
+              }}</span>
+            </td>
+            <td *appSiPermiso="'CATALOGO_ESCRIBIR'">
+              <div class="actions">
+                <a class="btn" [routerLink]="[p.id, 'editar']">Editar</a
+                ><button class="btn btn-peligro" (click)="eliminar(p)" [disabled]="eliminando()">
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6">No hay productos para mostrar.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-paginador [pagina]="r.pagina" [tamanio]="r.tamanio" [totalPaginas]="r.totalPaginas"
+    [totalElementos]="r.totalElementos" [cargando]="cargando()"
+    (cambioPagina)="navegar({ pagina: $event })"
+    (cambioTamanio)="navegar({ tamanio: $event, pagina: 0 })" />
+}

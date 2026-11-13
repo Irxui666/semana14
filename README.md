@@ -2,7 +2,6 @@
 
 - [Backend Spring Boot y ejecución local](PharmaBackend/README.md)
 - [Frontend Angular](pharmaSoft-frotend-main/)
-- [Práctica con capturas](docs/Condori_LP2_S14_Practica.pdf)
 - [Informe Playwright](docs/playwright-report.html)
 - [Incidencias](pharmaSoft-frotend-main/docs/incidencias.md)
 
